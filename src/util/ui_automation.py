@@ -32,7 +32,6 @@ from contextlib import contextmanager
 from xvfbwrapper import Xvfb
 from util import file_util
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 class PopenContext(subprocess.Popen):
@@ -80,13 +79,14 @@ def clipboard_retrieve():
         output += line.decode()
     return output;
 
-def wait_for_window(name, window_regex, timeout=10, focus=True):
+def wait_for_window(name, window_regex, timeout=10, focus=False):
     DELAY = 0.5
     logger.info('Waiting for %s window...', name)
     xdotool_command = ['search', '--onlyvisible', '--name', window_regex]
     if focus:
         xdotool_command.append('windowfocus')
 
+    print(' '.join(xdotool_command))
     for i in range(int(timeout/DELAY)):
         try:
             window_id = xdotool(xdotool_command).strip()

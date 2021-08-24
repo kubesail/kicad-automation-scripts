@@ -6,8 +6,8 @@ import logging
 import time
 import psutil
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 def mkdir_p(path):
     try:
@@ -18,11 +18,12 @@ def mkdir_p(path):
         else:
             raise
 
+
 def wait_for_file_created_by_process(pid, file, timeout=5):
     process = psutil.Process(pid)
 
     DELAY = 0.01
-    for i in range(int(timeout/DELAY)):
+    for i in range(int(timeout / DELAY)):
         open_files = process.open_files()
         logger.debug(open_files)
         if os.path.isfile(file):
@@ -30,13 +31,13 @@ def wait_for_file_created_by_process(pid, file, timeout=5):
             for open_file in open_files:
                 if open_file.path == file:
                     file_open = True
-            
+
             if file_open:
-                logger.debug('Waiting for process to close file')
+                logger.debug("Waiting for process to close file")
             else:
                 return
         else:
-            logger.debug('Waiting for process to create file')
+            logger.debug("Waiting for process to create file")
         time.sleep(DELAY)
 
-    raise RuntimeError('Timed out waiting for creation of %s' % file)
+    raise RuntimeError("Timed out waiting for creation of %s" % file)
